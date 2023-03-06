@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 @file:Suppress("DEPRECATION")
+
 package org.traccar.manager
 
 import android.annotation.SuppressLint
@@ -26,6 +27,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.Button
 import android.widget.EditText
 import androidx.preference.PreferenceManager
@@ -41,12 +43,25 @@ class StartFragment : Fragment(), View.OnClickListener {
 
     private lateinit var serverField: EditText
     private lateinit var startButton: Button
+    private lateinit var mWebView: WebView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_start, container, false)
-        serverField = view.findViewById(R.id.field_server)
-        startButton = view.findViewById(R.id.button_start)
-        startButton.setOnClickListener(this)
+        mWebView = view.findViewById(R.id.webview)
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        mWebView.getSettings().setDomStorageEnabled(true);
+
+
+        mWebView.loadUrl("https://tracker.mtelematics.co/");
+
+//        serverField = view.findViewById(R.id.field_server)
+//        startButton = view.findViewById(R.id.button_start)
+//        startButton.setOnClickListener(this)
         return view
     }
 
@@ -111,7 +126,10 @@ class StartFragment : Fragment(), View.OnClickListener {
         startButton.isEnabled = true
         val alertDialog = AlertDialog.Builder(activity).create()
         alertDialog.setMessage(getString(R.string.error_connection))
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok)) { dialog, _ -> dialog.dismiss() }
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEUTRAL,
+            getString(android.R.string.ok)
+        ) { dialog, _ -> dialog.dismiss() }
         alertDialog.show()
     }
 
